@@ -32,8 +32,8 @@ On macOS and Linux you may need to run `chmod +x robotkit-gui-macos` first. On m
 You need Python 3.9 or newer.
 
 ```bash
-git clone https://github.com/your-name/robotkit.git
-cd robotkit
+git clone https://github.com/OpenSourceRobots/Robot.Open.Source.git
+cd Robot.Open.Source
 python3 -m pip install -e ".[serial]"
 python3 -m robotkit
 ```
