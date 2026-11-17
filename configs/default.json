@@ -1,0 +1,9 @@
+{
+  "wheel_base": 2.0,
+  "max_wheel_speed": 2.0,
+  "max_acceleration": 0.5,
+  "max_angular_acceleration": 0.3,
+  "stop_distance": 1.5,
+  "safe_distance": 5.0,
+  "sensor_range": 15.0
+}
