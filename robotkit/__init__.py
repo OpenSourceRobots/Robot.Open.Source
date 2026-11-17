@@ -7,5 +7,8 @@ from .navigator import Navigator
 from .simulator import Simulator
 from .config import RobotConfig, load_config
 from .hardware import PrintDriver, SerialDriver
+from .odometry import Odometry
+from .route import Route
+from .logger import CsvLogger
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"

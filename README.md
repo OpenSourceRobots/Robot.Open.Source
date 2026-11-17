@@ -1,6 +1,6 @@
 # robotkit
 
-> **Work in progress.** This project used to live on a different website and is being migrated to GitHub. Some docs, issues and features have not made the move yet.
+> **Work in progress. Help wanted!** This project used to live on a different website and is being migrated to GitHub. Some docs, issues and features have not made the move yet. See [how to help](docs/help-wanted.md).
 
 Open source toolkit for building, simulating and driving large, heavy-duty robots. Runs on Windows, macOS and Linux.
 
@@ -45,6 +45,7 @@ On Windows use `py` in place of `python3`.
 ```bash
 robotkit gui
 robotkit sim --goal 45 0 --obstacle 15 1 2 --obstacle 28 -2 2
+robotkit sim --waypoint 10 0 --waypoint 10 10 --log run.csv
 robotkit ports
 robotkit drive --port COM3 --left 0.5 --right 0.5 --seconds 3
 ```
@@ -101,6 +102,10 @@ python3 -m pytest
 - [ ] Encoder and GPS input
 - [ ] Docs migrated from the old site
 - [ ] Old issues and discussions migrated
+
+## Help wanted
+
+We are looking for contributors. Good first jobs and bigger ones are listed in [docs/help-wanted.md](docs/help-wanted.md). Look for issues labeled `help wanted`.
 
 ## Contributing
 

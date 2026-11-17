@@ -6,6 +6,8 @@ from . import __version__
 from .config import load_config
 from .drive import Pose
 from .hardware import PrintDriver, SerialDriver, list_ports
+from .logger import CsvLogger
+from .route import Route
 from .sensors import Obstacle
 
 PERIOD = 0.05
@@ -33,6 +35,16 @@ def build_parser():
         default=[],
         metavar=("X", "Y", "RADIUS"),
     )
+    sim.add_argument(
+        "--waypoint",
+        nargs=2,
+        type=float,
+        action="append",
+        default=[],
+        metavar=("X", "Y"),
+        help="drive through these points in order, replaces --goal",
+    )
+    sim.add_argument("--log", help="write the run to a CSV file")
     sim.add_argument("--max-time", type=float, default=600.0)
 
     commands.add_parser("ports", help="list serial ports")
@@ -61,13 +73,27 @@ def run_sim(args):
     config = load_config(args.config)
     obstacles = [Obstacle(x, y, radius) for x, y, radius in args.obstacle]
     sim = config.make_simulator(obstacles, Pose())
-    navigator = config.make_navigator(tuple(args.goal))
+    route = Route(args.waypoint or [args.goal])
+    navigator = config.make_navigator(route.points[0])
+    logger = CsvLogger(args.log, ["time", "x", "y", "state"]) if args.log else None
     state = "driving"
-    while sim.time < args.max_time:
-        linear, angular, state = navigator.update(sim.pose, sim.read_sensors(), PERIOD)
-        if state in ("arrived", "emergency stop"):
-            break
-        sim.step(linear, angular, PERIOD)
+    try:
+        while sim.time < args.max_time:
+            target = route.next_target(sim.pose)
+            if target is None:
+                state = "arrived"
+                break
+            if target != navigator.goal.target:
+                navigator.set_target(target)
+            linear, angular, state = navigator.update(sim.pose, sim.read_sensors(), PERIOD)
+            if logger:
+                logger.log(time=round(sim.time, 2), x=round(sim.pose.x, 3), y=round(sim.pose.y, 3), state=state)
+            if state == "emergency stop":
+                break
+            sim.step(linear, angular, PERIOD)
+    finally:
+        if logger:
+            logger.close()
     print(f"result: {state}")
     print(f"time: {sim.time:.1f} s")
     print(f"position: ({sim.pose.x:.2f}, {sim.pose.y:.2f})")
